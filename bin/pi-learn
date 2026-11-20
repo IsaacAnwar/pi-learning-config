@@ -27,25 +27,30 @@ case "${1:-}" in
     ;;
 esac
 
-use_math=${PI_LEARN_MATH:-1}
+interactive=1
 for arg do
   case "$arg" in
     --) break ;;
     -p|--print|--mode|--mode=*|--export|--list-models|-h|--help|-v|--version)
-      use_math=0
+      interactive=0
       ;;
   esac
 done
 
-if [ "$use_math" = 1 ] && [ -t 0 ] && [ -t 1 ]; then
+set -- --skill "$skill" --append-system-prompt "$skill" "$@"
+if [ "$interactive" = 1 ] && [ -t 0 ] && [ -t 1 ]; then
+  set -- --extension "$root/integrations/learning-header.ts" "$@"
+  if [ "${PI_LEARN_MATH:-1}" != 1 ]; then
+    exec "$pi" "$@"
+  fi
+
   # Herdr displays TFormula's image placements on the regular screen.
   set -- --tui-mode regular \
-    --extension "$root/integrations/raw-latex.ts" \
-    --skill "$skill" --append-system-prompt "$skill" "$@"
+    --extension "$root/integrations/raw-latex.ts" "$@"
   if [ "${TFORMULA_ACTIVE:-0}" = 1 ]; then
     exec "$pi" "$@"
   fi
   exec "$tformula" --no-history -- "$pi" "$@"
 fi
 
-exec "$pi" --skill "$skill" --append-system-prompt "$skill" "$@"
+exec "$pi" "$@"

@@ -1,6 +1,6 @@
 # Pi Learning Config
 
-Run Pi as a tutor from Herdr or a terminal that supports Kitty graphics. The launcher loads the [learning skill](skills/learn/SKILL.md) as session instructions and sends Pi's display LaTeX to TFormula for typesetting.
+Run Pi as a tutor from Herdr or a terminal that supports Kitty graphics. The launcher loads the [learning skill](skills/learn/SKILL.md) as session instructions and sends Pi's display LaTeX to TFormula for typesetting. The compact Pi Learn header shows your configured shortcuts, with more shortcuts and loaded resources available through the expand key.
 
 ## Install
 
