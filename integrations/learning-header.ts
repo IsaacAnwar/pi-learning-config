@@ -1,5 +1,7 @@
 import { VERSION, keyText, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+// The stock logo renderer is internal to the Pi version pinned in runtime/.
+import { piLogoLines, supportsPiLogo } from "../runtime/node_modules/@earendil-works/pi-coding-agent/dist/modes/interactive/components/pi-logo.js";
 
 export default function (pi: ExtensionAPI) {
   // Run after session_start so the Herdr profile's older banners can initialize first.
@@ -17,11 +19,11 @@ export default function (pi: ExtensionAPI) {
         },
         invalidate() {},
         render(width: number) {
-          const showMark = width >= 30;
-          const gutter = showMark ? "        " : width >= 2 ? " " : "";
+          const logo = width >= 30 && supportsPiLogo() ? piLogoLines() : undefined;
+          const gutter = logo ? " ".repeat(visibleWidth(logo[0]) + 3) : width >= 2 ? " " : "";
           const title = theme.bold(theme.fg("text", "Pi Learn")) + theme.fg("muted", `  v${VERSION}`);
-          const lines = [showMark ? ` ${theme.fg("accent", "▄▄▄▄▄")}  ${title}` : gutter + title];
-          let prefix = showMark ? ` ${theme.fg("accent", " █ █ ")}  ` : gutter;
+          const lines = [logo ? ` ${logo[0]}  ${title}` : gutter + title];
+          let prefix = logo ? ` ${logo[1]}  ` : gutter;
           const separator = theme.fg("dim", "  ·  ");
           const hints = [
             hint(keyText("app.interrupt"), "interrupt"),
