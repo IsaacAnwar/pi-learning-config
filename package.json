@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "keywords": ["pi-package"],
+  "scripts": {
+    "setup": "node setup.mjs"
+  },
   "pi": {
     "skills": ["./skills"]
   }

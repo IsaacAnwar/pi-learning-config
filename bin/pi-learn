@@ -10,47 +10,5 @@ while [ -L "$script" ]; do
     *) script=$(dirname "$script")/$target ;;
   esac
 done
-root=$(CDPATH= cd -- "$(dirname "$script")/.." && pwd -P)
-
-pi="$root/runtime/node_modules/.bin/pi"
-tformula="$root/runtime/node_modules/.bin/tformula"
-skill="$root/skills/learn/SKILL.md"
-if [ ! -x "$pi" ] || [ ! -x "$tformula" ]; then
-  printf 'Run %s/install.sh first.\n' "$root" >&2
-  exit 1
-fi
-
-# Pi recognizes administration commands only in the first argument.
-case "${1:-}" in
-  install|remove|uninstall|update|list|config|auth|mcp)
-    exec "$pi" "$@"
-    ;;
-esac
-
-interactive=1
-for arg do
-  case "$arg" in
-    --) break ;;
-    -p|--print|--mode|--mode=*|--export|--list-models|-h|--help|-v|--version)
-      interactive=0
-      ;;
-  esac
-done
-
-set -- --skill "$skill" --append-system-prompt "$skill" "$@"
-if [ "$interactive" = 1 ] && [ -t 0 ] && [ -t 1 ]; then
-  set -- --extension "$root/integrations/learning-header.ts" "$@"
-  if [ "${PI_LEARN_MATH:-1}" != 1 ]; then
-    exec "$pi" "$@"
-  fi
-
-  # Herdr displays TFormula's image placements on the regular screen.
-  set -- --tui-mode regular \
-    --extension "$root/integrations/raw-latex.ts" "$@"
-  if [ "${TFORMULA_ACTIVE:-0}" = 1 ]; then
-    exec "$pi" "$@"
-  fi
-  exec "$tformula" --no-history -- "$pi" "$@"
-fi
-
-exec "$pi" "$@"
+bin_dir=$(CDPATH= cd -- "$(dirname "$script")" && pwd -P)
+exec node "$bin_dir/pi-learn.mjs" "$@"
