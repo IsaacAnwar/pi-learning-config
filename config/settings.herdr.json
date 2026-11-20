@@ -1,0 +1,14 @@
+{
+  "theme": "dark",
+  "markdown": {
+    "mermaid": "streaming"
+  },
+  "packages": [
+    "npm:pi-open-tui",
+    "npm:pi-powerline-footer",
+    "npm:pi-web-access@0.34.0",
+    "npm:@narumitw/pi-usage@0.61.1",
+    "npm:pi-memory@0.4.2",
+    "npm:pi-subagents"
+  ]
+}

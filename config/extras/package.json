@@ -1,0 +1,8 @@
+{
+  "name": "pi-learning-herdr-extras",
+  "private": true,
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  }
+}

@@ -1,0 +1,51 @@
+#!/bin/sh
+set -eu
+
+# Resolve the installer-created symlink so resources follow the checkout.
+script=$0
+while [ -L "$script" ]; do
+  target=$(readlink "$script")
+  case "$target" in
+    /*) script=$target ;;
+    *) script=$(dirname "$script")/$target ;;
+  esac
+done
+root=$(CDPATH= cd -- "$(dirname "$script")/.." && pwd -P)
+
+pi="$root/runtime/node_modules/.bin/pi"
+tformula="$root/runtime/node_modules/.bin/tformula"
+skill="$root/skills/learn/SKILL.md"
+if [ ! -x "$pi" ] || [ ! -x "$tformula" ]; then
+  printf 'Run %s/install.sh first.\n' "$root" >&2
+  exit 1
+fi
+
+# Pi recognizes administration commands only in the first argument.
+case "${1:-}" in
+  install|remove|uninstall|update|list|config|auth|mcp)
+    exec "$pi" "$@"
+    ;;
+esac
+
+use_math=${PI_LEARN_MATH:-1}
+for arg do
+  case "$arg" in
+    --) break ;;
+    -p|--print|--mode|--mode=*|--export|--list-models|-h|--help|-v|--version)
+      use_math=0
+      ;;
+  esac
+done
+
+if [ "$use_math" = 1 ] && [ -t 0 ] && [ -t 1 ]; then
+  # Herdr displays TFormula's image placements on the regular screen.
+  set -- --tui-mode regular \
+    --extension "$root/integrations/raw-latex.ts" \
+    --skill "$skill" --append-system-prompt "$skill" "$@"
+  if [ "${TFORMULA_ACTIVE:-0}" = 1 ]; then
+    exec "$pi" "$@"
+  fi
+  exec "$tformula" --no-history -- "$pi" "$@"
+fi
+
+exec "$pi" --skill "$skill" --append-system-prompt "$skill" "$@"
