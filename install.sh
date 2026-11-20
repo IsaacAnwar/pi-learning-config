@@ -16,15 +16,9 @@ if ! command -v npm >/dev/null 2>&1; then
   printf 'Install Node.js 22.19 or newer with npm first.\n' >&2
   exit 1
 fi
-npm ci --prefix "$root/runtime" --engine-strict
+npm --prefix "$root" run setup
 
-agent_dir=${PI_CODING_AGENT_DIR:-"$HOME/.pi/agent"}
-mkdir -p "$agent_dir" "$bin_dir"
-for name in settings.json keybindings.json; do
-  if [ ! -e "$agent_dir/$name" ] && [ ! -L "$agent_dir/$name" ]; then
-    (set -C; cat "$root/config/$name" > "$agent_dir/$name")
-  fi
-done
+mkdir -p "$bin_dir"
 if [ ! -L "$launcher" ]; then
   ln -s "$root/bin/pi-learn" "$launcher"
 fi
