@@ -18,6 +18,10 @@ if ! command -v npm >/dev/null 2>&1; then
 fi
 npm --prefix "$root" run setup
 
+# Some ZIP extractors drop the executable bit.
+if [ ! -x "$root/bin/pi-learn" ]; then
+    chmod u+x "$root/bin/pi-learn"
+fi
 mkdir -p "$bin_dir"
 if [ ! -L "$launcher" ]; then
   ln -s "$root/bin/pi-learn" "$launcher"

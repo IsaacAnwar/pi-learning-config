@@ -4,7 +4,8 @@
   "private": true,
   "keywords": ["pi-package"],
   "scripts": {
-    "setup": "node setup.mjs"
+    "setup": "node runtime/setup.mjs",
+    "start": "node bin/pi-learn.mjs"
   },
   "pi": {
     "skills": ["./skills"]
