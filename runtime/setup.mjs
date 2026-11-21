@@ -1,8 +1,8 @@
 import { spawnSync } from "node:child_process";
 import { constants, copyFileSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { homedir, tmpdir } from "node:os";
-import { join } from "node:path";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 
 const npm = process.env.npm_execpath;
 if (!npm) {
@@ -10,8 +10,8 @@ if (!npm) {
   process.exit(1);
 }
 
-const root = import.meta.dirname;
-const runtime = join(root, "runtime");
+const runtime = import.meta.dirname;
+const root = dirname(runtime);
 
 function runNpm(args, env = process.env) {
   const result = spawnSync(process.execPath, [npm, ...args], { cwd: runtime, env, stdio: "inherit" });
@@ -52,7 +52,8 @@ if (existsSync(renderer)) {
   }
 }
 
-const agentDir = process.env.PI_CODING_AGENT_DIR || join(homedir(), ".pi", "agent");
+const { getAgentDir } = await import("@earendil-works/pi-coding-agent");
+const agentDir = resolve(process.env.INIT_CWD || root, getAgentDir());
 mkdirSync(agentDir, { recursive: true });
 for (const file of ["settings.json", "keybindings.json"]) {
   try {
@@ -62,4 +63,4 @@ for (const file of ["settings.json", "keybindings.json"]) {
   }
 }
 
-console.log("Start Pi with node bin/pi-learn.mjs");
+console.log("Start Pi from this folder with npm start.");

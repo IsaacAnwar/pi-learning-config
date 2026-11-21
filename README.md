@@ -10,26 +10,29 @@ A tutoring setup for the Pi terminal agent. Ask for a worked example, check your
 
 ## Install
 
-You'll need Git and Node.js 22.19 or newer with npm.
-
-### macOS, Linux, or WSL
+You'll need Node.js 22.19 or newer with npm. [Download the ZIP](https://github.com/IsaacAnwar/pi-learning-config/archive/refs/heads/main.zip), extract it, and open a terminal in the extracted folder. If you use Git, you can clone it instead.
 
 ```sh
 git clone https://github.com/IsaacAnwar/pi-learning-config.git
 cd pi-learning-config
-./install.sh
+```
+
+### macOS, Linux, or WSL
+
+```sh
+sh ./install.sh
 ~/.local/bin/pi-learn
 ```
+
+Keep the extracted folder so the per-user launcher can find it. To run from the checkout, use `npm run setup` once and `npm start` to launch.
 
 ### Native Windows
 
 In [Windows Terminal with Git for Windows](https://docs.pi.dev/latest/windows), run these commands in PowerShell.
 
 ```powershell
-git clone https://github.com/IsaacAnwar/pi-learning-config.git
-cd pi-learning-config
 npm.cmd run setup
-node .\bin\pi-learn.mjs
+npm.cmd start
 ```
 
 In your first session, use `/login` to connect a supported provider and `/model` to select a model.
@@ -39,9 +42,15 @@ In your first session, use `/login` to connect a supported provider and `/model`
 
 Both installers use the same npm lockfile and skip dependency lifecycle scripts. Linux builds the locked `node-pty` dependency separately when needed for TFormula. The build requires Python 3, make, and a C/C++ toolchain, such as `python3` and `build-essential` on Debian or Ubuntu.
 
-Setup uses Pi's usual settings, sessions, and authentication directory, or the directory set with `PI_CODING_AGENT_DIR`. The dark theme, streaming Mermaid, and shortcut defaults are seeded when the corresponding settings files are absent.
+Setup uses Pi's usual settings, sessions, and authentication directory, or the directory set with `PI_CODING_AGENT_DIR`. Use an absolute or home-relative path for that override if you launch Pi from different directories. The dark theme, streaming Mermaid, and shortcut defaults are seeded when the corresponding settings files are absent.
 
 </details>
+
+### Install with a coding agent
+
+Open the checkout in Claude Code and run `/setup-pi-learn`. Other coding agents can follow [AGENTS.md](AGENTS.md). To have an agent download and set it up for you, give it this prompt.
+
+> Set up Pi Learn from https://github.com/IsaacAnwar/pi-learning-config. Follow the repository's AGENTS.md and verify that it starts in a standalone terminal.
 
 ## Try a prompt
 
@@ -63,7 +72,7 @@ Setup uses Pi's usual settings, sessions, and authentication directory, or the d
 
 ## Use in Herdr
 
-Use the full launcher path printed by `./install.sh` as the value in `programs.pi.run` in `~/.config/herdr-app/programs.json`.
+Use the full launcher path printed by `sh ./install.sh` as the value in `programs.pi.run` in `~/.config/herdr-app/programs.json`.
 
 ```json
 {
@@ -87,6 +96,6 @@ TFormula renders equation images on macOS and Linux in terminals with compatible
 - On an existing Pi installation, you can install just the skill with `pi install git:github.com/IsaacAnwar/pi-learning-config` and invoke it with `/skill:learn`.
 - The original header and the `/clear`, `/exit`, and `/session-usage` extensions are in [the optional Herdr package](config/extras). Install it with `~/.local/bin/pi-learn install "$PWD/config/extras"` from this checkout if those commands aren't already installed. The [Open TUI preferences](config/open-tui.json) are for the optional `pi-open-tui` package.
 - For the original add-ons, add the package sources from [the Herdr settings example](config/settings.herdr.json) to your Pi settings. Pi installs the configured packages on the next launch.
-- Run `git pull --ff-only` and repeat the setup command for your platform to update.
+- In a Git checkout, run `git pull --ff-only` and repeat the setup command to update. For a newer ZIP extracted to a new folder, run the npm setup and start commands from that folder.
 
 [Pi documentation](https://docs.pi.dev/) · [TFormula](https://github.com/mikewang817/TFormula) · [Original Herdr configuration](https://github.com/IsaacAnwar/herdr-config)

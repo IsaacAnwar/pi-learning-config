@@ -3,6 +3,7 @@ node_modules/
 .env
 .env.*
 .npmrc
+.claude/settings.local.json
 .pi/
 auth.json
 models.json
